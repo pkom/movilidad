@@ -1,0 +1,101 @@
+<div id="contenedoraestadisticas" class='centerGrid'>                 
+            <table id='estadisticas' style='width: 100%'></table>
+            <div id='pagerestadisticas'></div>
+</div>
+<div id="dialog-alert-avisos" title="Atención" style="display:none;">
+            <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Para operar sobre un registro debe seleccionarlo previamente.</p>
+</div>
+
+<script type="text/javascript">
+
+jQuery(document).ready(function(){ 
+
+  var getColumnIndexByName = function(grid, columnName) {
+        var cm = grid.jqGrid('getGridParam', 'colModel'), i, l;
+        for (i = 0, l = cm.length; i < l; i += 1) {
+            if (cm[i].name === columnName) {
+                return i; // return the index
+            }
+        }
+        return -1;
+  }; 
+  
+  jQuery("#estadisticas").jqGrid({
+    url:'{{=URL(c="services",f="call",args=["json","getEstadisticas"])}}',
+    data: "{}",
+    datatype: 'json',
+    mtype: 'GET',
+    contentType: "application/json; charset=utf-8",
+    complete: function(jsondata, stat) {
+        if (stat == "success") {
+            var thegrid = jQuery("#estadisticas")[0];
+            thegrid.addJSONData(JSON.parse(jsondata.responseText).d);
+        }
+    },              
+    colNames:['Id','Nombre','Login','Equipo','Fecha','Hora'],
+    colModel :[ 
+        {name:'id',index:'id',width:20,align:'right',sortype:'int',search:false,editable:false}, 
+        {name:'nombre', index:'nombre',align:'center',search:true,sortable:false,stype:'text',editable:false},        
+        {name:'usuario', index:'usuario',width:40,align:'center',search:true,stype:'text',editable:false},
+        {name:'equipo', index:'equipo',width:40,align:'center',sortable:true,stype:'text',editable:false},           
+
+        {name:'fecha', index:'fecha',width:90,fixed:true,align:'center',sortype:'date',search:true,stype:'text',editable:false,   
+         searchoptions:{dataInit: function (elem) { $(elem).datepicker({dateFormat: 'y/mm/dd', firstDay: 1, showAnim: "fold"}).change(function(){$('#estadisticas')[0].triggerToolbar();})     }}},
+        {name:'hora', index:'hora',width:20,align:'center',sortable:true,stype:'text',editable:false}
+      ],
+    autowidth: true,
+    height: '100%',
+    pagerpos: 'center',
+    shrinkToFit: true,
+    pager: '#pagerestadisticas',
+    rowNum:20,
+    rowList:[10,20,30],
+    sortname: 'fecha',
+    sortorder: 'desc',
+    viewrecords: true,
+    caption: '{{=T('Estadísticas de accesos de usuarios')}}',
+    multiselect: false   
+  });       
+
+  jQuery("#estadisticas").jqGrid('navGrid','#pagerestadisticas',{add:false,edit:false,del:false,view:false,search:false});
+  jQuery("#estadisticas").jqGrid('filterToolbar');
+  var gwdth = jQuery("#contenedorestadisticas").width();
+  jQuery("#estadisticas").jqGrid().setGridWidth(gwdth);  
+
+  jQuery("#estadisticas").jqGrid('navButtonAdd','#pagerestadisticas',{
+      caption: "Puesto",
+      buttonicon :'ui-icon-print',
+      title: "Informe de puesto",      
+      onClickButton : function (){ 
+          informePuesto();
+      } 
+  }); 
+  
+});  
+  
+
+function rowSelectedEstadisticas(){
+    var id = jQuery("#estadisticas").jqGrid('getGridParam','selrow'); 
+    if( id == null ){
+        jQuery( "#dialog-alert-avisos" ).dialog({
+            resizable: false,
+            height:150,
+            width:290,
+            modal: true,
+            buttons: { "Aceptar": function() { $( this ).dialog( "close" ); }}
+        }).dialog('open');
+        return false;
+    }
+    return id;
+};           
+
+function informePuesto(){
+    var id = rowSelectedEstadisticas();
+    if(id==false) return false;
+    var ret = jQuery("#estadisticas").jqGrid('getRowData',id);
+    //window.location.replace("/movilidad/informes/informepuesto/"+ret.id);    
+    window.open("/movilidad/informes/informepuesto/"+ret.id);    
+    
+};
+
+</script>

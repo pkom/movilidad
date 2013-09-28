@@ -1,0 +1,8 @@
+*.py[co]
+*.bak
+databases
+errors
+private
+progress.log
+sessions
+uploads

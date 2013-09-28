@@ -1,0 +1,21 @@
+{{
+response.files.append(URL('static', 'jqgrid/css/ui.jqgrid.css'))
+response.files.append(URL('static', 'jqgrid/js/i18n/grid.locale-es.js'))
+response.files.append(URL('static', 'jqgrid/js/jquery.jqGrid.min.js'))
+response.files.append(URL('static', 'ui/jquery.ui.datepicker_es.js'))
+}}  
+
+
+{{extend 'layout.html'}}
+
+<style type="text/css">
+  .ui-pg-selbox {
+        padding-top: 0px;
+        padding-bottom: 0px;     
+  }
+  input.ui-pg-input, select.ui-pg-selbox {
+		width: 50px;
+  }  
+</style>
+
+{{=LOAD(c='actividad_puestos',f='estadisticas',extension='load',ajax=True,ajax_trap=False,target='contenedorestadisticas')}}
