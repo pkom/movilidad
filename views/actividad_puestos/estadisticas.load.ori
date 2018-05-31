@@ -32,13 +32,13 @@ jQuery(document).ready(function(){
             thegrid.addJSONData(JSON.parse(jsondata.responseText).d);
         }
     },              
-    colNames:['Id','Nombre','Login','Equipo','IP','Fecha','Hora'],
+    colNames:['Id','Nombre','Login','Equipo','Fecha','Hora'],
     colModel :[ 
         {name:'id',index:'id',width:20,align:'right',sortype:'int',search:false,editable:false}, 
         {name:'nombre', index:'nombre',align:'center',search:true,sortable:false,stype:'text',editable:false},        
         {name:'usuario', index:'usuario',width:40,align:'center',search:true,stype:'text',editable:false},
         {name:'equipo', index:'equipo',width:40,align:'center',sortable:true,stype:'text',editable:false},           
-        {name:'ip', index:'ip',width:40,align:'center',sortable:true,stype:'text',editable:false,search:true},
+
         {name:'fecha', index:'fecha',width:90,fixed:true,align:'center',sortype:'date',search:true,stype:'text',editable:false,   
          searchoptions:{dataInit: function (elem) { $(elem).datepicker({dateFormat: 'y/mm/dd', firstDay: 1, showAnim: "fold"}).change(function(){$('#estadisticas')[0].triggerToolbar();})     }}},
         {name:'hora', index:'hora',width:20,align:'center',sortable:true,stype:'text',editable:false}

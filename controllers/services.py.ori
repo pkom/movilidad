@@ -10,7 +10,7 @@ def call():
 
 @service.json
 def getEstadisticas():
-    fields = ['id','nombre','usuario','equipo','ip','fecha','hora']  
+    fields = ['id','nombre','usuario','equipo','fecha','hora']  
     rows = []
     if request.vars._search == 'true':
         searching = True
@@ -32,10 +32,6 @@ def getEstadisticas():
         orderby = (db.equipos.nombre_equipo | ~db.estadisticas.fecha | ~db.estadisticas.hora)
     elif (request.vars.sord == 'desc' and request.vars.sidx == 'equipo'):
         orderby = (~db.equipos.nombre_equipo | ~db.estadisticas.fecha | ~db.estadisticas.hora)
-    elif (request.vars.sord == 'asc' and request.vars.sidx == 'ip'):
-        orderby = (db.aulasequipos.ip | ~db.estadisticas.fecha | ~db.estadisticas.hora)
-    elif (request.vars.sord == 'desc' and request.vars.sidx == 'ip'):
-        orderby = (~db.aulasequipos.ip | ~db.estadisticas.fecha | ~db.estadisticas.hora)
     elif (request.vars.sord == 'asc' and request.vars.sidx == 'fecha'):
         orderby = (db.estadisticas.fecha | ~db.estadisticas.hora)
     elif (request.vars.sord == 'desc' and request.vars.sidx == 'fecha'):
@@ -74,9 +70,6 @@ def getEstadisticas():
         if request.vars.equipo:    
             equipo = '%'+request.vars.equipo.lower()+'%'
             queries.append(db.equipos.nombre_equipo.lower().like(equipo)) 
-        if request.vars.ip:
-            ip = '%'+request.vars.ip.lower()+'%'
-            queries.append(db.aulasequipos.ip.lower().like(ip))
     query = reduce(lambda a,b:(a&b),queries)
 
     for r in db(query).select(db.estadisticas.ALL, db.aulasequipos.ALL, db.usuarios.ALL, db.aulas.ALL, db.equipos.ALL, limitby=limitby, orderby=orderby):
@@ -91,9 +84,6 @@ def getEstadisticas():
             elif f == 'equipo':
                 equipo = r.equipos.nombre_equipo
                 vals.append(equipo)
-            elif f == 'ip':
-                ip = r.aulasequipos.ip
-                vals.append(ip)
             else:
                 rep = db.estadisticas[f].represent
                 if rep:
